@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /*
- * Copyright (C) 2015 didosalazar
+ * Copyright (C) 2015 Dido Salazar
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

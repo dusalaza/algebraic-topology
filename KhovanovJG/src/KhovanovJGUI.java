@@ -85,7 +85,7 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
         pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
+        selectAllMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         displayFormatMenu = new javax.swing.JMenu();
         polynomialRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
@@ -138,7 +138,6 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         );
 
         aboutDialog.setMinimumSize(new java.awt.Dimension(400, 300));
-        aboutDialog.setPreferredSize(new java.awt.Dimension(400, 300));
 
         aboutCloseButton.setText("Close");
         aboutCloseButton.addActionListener(new java.awt.event.ActionListener() {
@@ -323,19 +322,38 @@ public class KhovanovJGUI extends javax.swing.JFrame {
 
         cutMenuItem.setMnemonic('t');
         cutMenuItem.setText("Cut");
+        cutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cutMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(cutMenuItem);
 
         copyMenuItem.setMnemonic('y');
         copyMenuItem.setText("Copy");
+        copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(copyMenuItem);
 
         pasteMenuItem.setMnemonic('p');
         pasteMenuItem.setText("Paste");
+        pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasteMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(pasteMenuItem);
 
-        deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
+        selectAllMenuItem.setText("Select All");
+        selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectAllMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(selectAllMenuItem);
         editMenu.add(jSeparator1);
 
         displayFormatMenu.setText("Display Format");
@@ -414,18 +432,17 @@ public class KhovanovJGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outputClearButton)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addComponent(calcButton)))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(clearAllButton)
-                        .addGap(30, 30, 30)))
+                        .addGap(18, 18, 18)
+                        .addComponent(outputClearButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(calcButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(clearAllButton)))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -484,15 +501,16 @@ public class KhovanovJGUI extends javax.swing.JFrame {
                                 .addComponent(jLabel6))
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(saveButton)
-                    .addComponent(jLabel2))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(saveButton)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
+                        .addGap(43, 43, 43)
                         .addComponent(calcButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(outputClearButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clearAllButton))
@@ -832,8 +850,8 @@ public class KhovanovJGUI extends javax.swing.JFrame {
     
     /**
      * Text File generator used in Save function
-     * @param displayed the text in the output box
-     * @param fileName  the desired file name and extension
+     * @param displayed The text in the output box
+     * @param fileName  The desired file name and extension
      */
     public static void saveOutput(String displayed, String fileName){
         String[] lines = displayed.split("\n");
@@ -847,19 +865,40 @@ public class KhovanovJGUI extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Calculate Button action
      * @param evt click
      */
     private void calcButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcButtonActionPerformed
         String inputs;
-        String convertInputs;
+        StringBuilder convertInputs = new StringBuilder();
         int[] dots = new int[5];
                 
         inputs = listInput.getText();
-        convertInputs = inputs.replaceAll(", ", " ").replaceAll("\n", " ");
-        String[] allInputs = convertInputs.split(" ");
+        convertInputs.append(inputs.replaceAll(" ", "").replaceAll("\n", ",")); 
+        
+        //Remove extra commas
+        char[] removeExtras = convertInputs.toString().toCharArray();
+        
+        for(int i = 0; i < removeExtras.length; i++){
+            if((removeExtras[i] != ',') && ((removeExtras[i] < '0') || (removeExtras[i] > '9'))){
+                convertInputs.deleteCharAt(i);
+            } else if((i < removeExtras.length - 1) && (removeExtras[i] == ',') && (removeExtras[i + 1] == ',')) {
+                convertInputs.deleteCharAt(i);
+            }
+        }
+        //remove extra comma at end if there is one
+        int conInputsLen = convertInputs.length() - 1;
+        
+        if(convertInputs.charAt(conInputsLen) == ','){
+            convertInputs.deleteCharAt(conInputsLen);
+        }
+        
+        //Generate int Array end evaluate
+        String[] allInputs = convertInputs.toString().split(",");
+        convertInputs.delete(0, convertInputs.length()); //clear for next calculation
+                        
         int numberOfInputs = allInputs.length / 5;
           
         for(int i = 0; i < numberOfInputs; i++){
@@ -931,6 +970,10 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_tableGenButtonActionPerformed
 
+    /**
+     * The File->Save action
+     * @param evt clicking of Save
+     */
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
         saveOutput(listOutput.getText(), "HKJRecord.txt");
     }//GEN-LAST:event_saveMenuItemActionPerformed
@@ -960,20 +1003,23 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         if(evt.getKeyCode() == VK_ENTER){
             saveAsName = newFileNameTextField.getText();
             
-            if(saveAsName.equals("")){
+            if(saveAsName.isEmpty()){
                 saveAsName = "HKJRecord.txt";
             }else if(saveAsName.charAt(0) == ' '){
                 saveAsName = "HKJRecord.txt";
             }else if(!saveAsName.contains(".")){
                 saveAsName += ".txt";
-            }            
+            }
+            
+            saveOutput(listOutput.getText(), saveAsName);
+            saveAsDialog.setVisible(false);
         }
     }//GEN-LAST:event_newFileNameTextFieldKeyPressed
 
     private void saveAsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsButtonActionPerformed
         saveAsName = newFileNameTextField.getText();
             
-        if(saveAsName.equals("")){
+        if(saveAsName.isEmpty()){
             saveAsName = "HKJRecord.txt";
         }else if(saveAsName.charAt(0) == ' '){
             saveAsName = "HKJRecord.txt";
@@ -984,6 +1030,42 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         saveOutput(listOutput.getText(), saveAsName);
         saveAsDialog.setVisible(false);
     }//GEN-LAST:event_saveAsButtonActionPerformed
+
+    /**
+     * Basic Edit Menu Functions
+     * @param evt clicking the menu item
+     */
+    private void selectAllMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllMenuItemActionPerformed
+        if(listInput.hasFocus()){
+          listInput.selectAll();
+        } else if (listOutput.hasFocus()){
+          listOutput.selectAll();
+        }
+    }//GEN-LAST:event_selectAllMenuItemActionPerformed
+
+    private void cutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutMenuItemActionPerformed
+        if(listInput.hasFocus()){
+          listInput.cut();
+        } else if (listOutput.hasFocus()){
+          listOutput.cut();
+        }
+    }//GEN-LAST:event_cutMenuItemActionPerformed
+
+    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyMenuItemActionPerformed
+        if(listInput.hasFocus()){
+          listInput.copy();
+        } else if (listOutput.hasFocus()){
+          listOutput.copy();
+        }        
+    }//GEN-LAST:event_copyMenuItemActionPerformed
+
+    private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
+        if(listInput.hasFocus()){
+          listInput.paste();
+        } else if (listOutput.hasFocus()){
+          listOutput.paste();
+        }
+    }//GEN-LAST:event_pasteMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1031,7 +1113,6 @@ public class KhovanovJGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.ButtonGroup displayFormatButtonGroup;
     private javax.swing.JMenu displayFormatMenu;
     private javax.swing.JMenu editMenu;
@@ -1068,6 +1149,7 @@ public class KhovanovJGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JButton saveButton;
     private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenuItem selectAllMenuItem;
     private javax.swing.JButton tableGenButton;
     private javax.swing.JRadioButtonMenuItem tabularRadioButtonMenuItem;
     private javax.swing.JRadioButtonMenuItem tupleRaidoButtonMenuItem;

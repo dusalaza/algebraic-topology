@@ -268,7 +268,7 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         listOutput.setColumns(20);
         listOutput.setRows(5);
         jScrollPane2.setViewportView(listOutput);
-
+//This is where the Furnace.jpg file is placed
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Furnace.jpg"))); // NOI18N
 
         jLabel2.setText("Input (1 set per line): x, y, z, u ,v ");
@@ -276,8 +276,8 @@ public class KhovanovJGUI extends javax.swing.JFrame {
         jLabel3.setText("Output");
 
         jLabel4.setText("Get all nonzero values:");
-
-        jLabel5.setIcon(new javax.swing.ImageIcon("/Users/didosalazar/Desktop/Research_Programs/JumpingJack/KhovanovJG/JumpingJackCap.jpg")); // NOI18N
+//This is where the JumpingJackCap.jpg file is placed. Change the path to match with its current location
+        jLabel5.setIcon(new javax.swing.ImageIcon("/KhovanovJG/JumpingJackCap.jpg")); // NOI18N
 
         jLabel6.setText("-Z");
 
